@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Book</title>
+  </head>
+  <body>
+    <h1>Update <%= @book.name()%></h1>
+    <form action="/books/<%= @book.id() %>" method="post">
+      <input type="hidden" name="_method" value="patch">
+
+      <label for="name">Rename Book</label>
+      <input type="text" name="name" id="name">
+
+      <label for="year">Change Book Year</label>
+      <input type="text" name="year" id="year">
+
+      <label for="genre">Change Genre</label>
+      <input type="text" name="genre" id="genre">
+
+      <label for="book">Change Book Book</label>
+      <input type="text" name="book" id="book">
+
+      <button type="submit">Update</button>
+    </form>
+    <p><a href="/books">Return to Book List</a></p>
+
+    <form action="/books/<%= @book.id() %>" method="post">
+      <input type="hidden" name="_method" value="delete">
+
+      <button type="submit">Delete Book</button>
+    </form>
+  </body>
+</html>

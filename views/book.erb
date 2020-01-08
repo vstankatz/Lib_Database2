@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>Single Book</title>
+  </head>
+  <body>
+    <h4>Book Name: <%= @book.name %></h4>
+    <h4>Book Year: <%= @book.year%></h4>
+    <h4>Book Genre: <%= @book.genre %></h4>
+    <h4>Book Artist: <%= @book.artist%></h4>
+
+
+<h3>Book Songs</h3>
+
+  <% if @book.songs %>
+    <ul>
+      <% @book.songs.each do |song| %>
+        <li><a href="/books/<%= @book.id %>/songs/<%= song.id %>"><%= song.name %></a></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>There are no songs listed for this book yet.</p>
+  <% end %>
+
+<h4>Add a song:</h4>
+
+<form action="/books/<%= @book.id %>/songs" method="post">
+  <div class="form-group">
+    <label for="song_name">Song name</label>
+    <input id="song_name" name="song_name" class="form-control" type="text">
+  </div>
+  <button type="submit" class="btn">Add song</button>
+</form>
+
+    <p><a href="/books/<%= @book.id %>/edit">Edit Book</a></p>
+    <a href="/books">Return to Book List</a>
+
+    <form action="/books/<%= @book.id()%>" method="post">
+      <input type="hidden" name="_method" value="patch">
+
+      <button type="submit">Buy Book</button>
+    </form>
+  </body>
+</html>
