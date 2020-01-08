@@ -6,9 +6,9 @@ describe '#Author' do
 
   describe('#save') do
     it("Saves author") do
-      author = Author.new({:id => nil, :name => "Kind of Blue"})
+      author = Author.new({:id => nil, :name => "Cormac McCarthy"})
       author.save()
-      author2 = Author.new({:id => nil, :name => "Kind of Green"})
+      author2 = Author.new({:id => nil, :name => "J. R. R. Tolkien"})
       author2.save()
       expect(Author.all).to(eq([author, author2]))
     end

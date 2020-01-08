@@ -1,7 +1,7 @@
 require('sinatra')
 require('sinatra/reloader')
-require('./lib/album')
-require('./lib/song')
+require('./lib/book')
+require('./lib/patron')
 require('pry')
 require("pg")
 

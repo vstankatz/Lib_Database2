@@ -1,10 +1,12 @@
 class Book
-  attr_reader :id, :name
+  attr_reader :id, :name, :genre
 
 
   def initialize(attributes)
     @id = attributes.fetch(:id)
     @name = attributes.fetch(:name)
+    @genre = attributes.fetch(:genre)
+    @isbn = attributes.fetch(:isbn)
   end
 
 
@@ -14,13 +16,15 @@ class Book
     returned_books.each() do |book|
       name = book.fetch("name")
       id = book.fetch("id").to_i
-      books.push(Book.new({:name => name, :id => id}))
+      genre = book.fetch("genre")
+      isbn = book.fetch("isbn").to_i
+      books.push(Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn}))
     end
     books
   end
 
   def save
-    result = DB.exec("INSERT INTO books (name) VALUES ('#{@name}') RETURNING id;")
+    result = DB.exec("INSERT INTO books (name, genre, isbn) VALUES ('#{@name}','#{@genre}', '#{@isbn}') RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
