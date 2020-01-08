@@ -12,7 +12,6 @@ describe '#Book' do
       book2 = Book.new({:id => nil, :name => "Kind of Green", :genre => "Sci Fi", :isbn => 345789234})
       book2.save()
       book2.addAuthor(1)
-      binding.pry
       expect(Book.all).to(eq([book, book2]))
     end
   end
