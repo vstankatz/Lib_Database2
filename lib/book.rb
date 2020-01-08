@@ -33,7 +33,7 @@ class Book
   end
 
   def ==(book_to_compare)
-    self.name().downcase().eql?(book_to_compare.name.downcase())
+    self.name.downcase().eql?(book_to_compare.name.downcase())
   end
 
   def self.clear
@@ -44,7 +44,18 @@ class Book
     book = DB.exec("SELECT * FROM books WHERE id = #{id};").first
     name = book.fetch("name")
     id = book.fetch("id").to_i
-    Book.new({:name => name, :id => id, :genre => genre})
+    genre = book.fetch("genre")
+    isbn  = book.fetch("isbn")
+    Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn})
+  end
+
+  def self.search(name)
+    book = DB.exec("SELECT * FROM books WHERE name = '#{name}'").first
+    name = book.fetch("name")
+    id = book.fetch("id").to_i
+    genre = book.fetch("genre")
+    isbn  = book.fetch("isbn")
+    Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn})
   end
 
   def find_by_artist(artist_id)
