@@ -1,9 +1,10 @@
 class Author
-  attr_reader :id, :name
+  attr_accessor :id, :name, :bio
 
   def initialize(attributes)
     @id = attributes.fetch(:id)
     @name = attributes.fetch(:name)
+    @bio = attributes.fetch(:bio)
   end
 
 
@@ -13,13 +14,14 @@ class Author
     returned_authors.each() do |author|
       name = author.fetch("name")
       id = author.fetch("id").to_i
-      authors.push(Author.new({:name => name, :id => id}))
+      bio = author.fetch("bio")
+      authors.push(Author.new({:name => name, :id => id, :bio => bio}))
     end
     authors
   end
 
   def save
-    result = DB.exec("INSERT INTO authors (name) VALUES ('#{@name}') RETURNING id;")
+    result = DB.exec("INSERT INTO authors (name, bio) VALUES ('#{@name}', '#{@bio}') RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
@@ -35,11 +37,12 @@ class Author
     author = DB.exec("SELECT * FROM authors WHERE id = #{id};").first
     name = author.fetch("name")
     id = author.fetch("id").to_i
-    Author.new({:name => name, :id => id})
+    bio = author.fetch("bio")
+    Author.new({:name => name, :id => id, :bio => bio})
   end
 
-  def albums
-    Album.find_by_author(self.id)
+  def books
+    Book.find_by_author(self.id)
   end
 
   def update(attributes)
@@ -47,29 +50,26 @@ class Author
       @name = attributes.fetch(:name)
       DB.exec("UPDATE authors SET name = '#{@name}' WHERE id = #{@id};")
     end
-    album_name = attributes.fetch(:album_name)
-    if album_name != nil
-      album = DB.exec("SELECT * FROM albums WHERE lower(name)='#{album_name.downcase}';").first
-      if album != nil
-        DB.exec("INSERT INTO albums_authors (album_id, author_id) VALUES (#{album['id'].to_i}, #{@id});")
-      end
+    if (attributes.has_key?(:bio)) && (attributes.fetch(:bio) != nil)
+      @name = attributes.fetch(:bio)
+      DB.exec("UPDATE authors SET bio = '#{@bio}' WHERE id = #{@id};")
     end
   end
 
-  def albums
-    albums = []
-    results = DB.exec("SELECT album_id FROM albums_authors WHERE author_id = #{@id};")
+  def books
+    books = []
+    results = DB.exec("SELECT book_id FROM creators WHERE author_id = #{@id};")
     results.each() do |result|
-      album_id = result.fetch("album_id").to_i()
-      album = DB.exec("SELECT * FROM albums WHERE id = #{album_id};")
-      name = album.first().fetch("name")
-      albums.push(Album.new({:name => name, :id => album_id}))
+      book_id = result.fetch("book_id").to_i()
+      book = DB.exec("SELECT * FROM books WHERE id = #{book_id};")
+      name = book.first().fetch("name")
+      books.push(Book.new({:name => name, :id => book_id}))
     end
-    albums
+    books
   end
 
   def delete
-    DB.exec("DELETE FROM albums_authors WHERE author_id = #{@id};")
+    DB.exec("DELETE FROM creators WHERE author_id = #{@id};")
     DB.exec("DELETE FROM authors WHERE id = #{@id};")
   end
 end

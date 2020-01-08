@@ -1,5 +1,5 @@
 class Book
-  attr_reader :id, :name, :genre
+  attr_reader :id, :name, :genre, :isbn
 
 
   def initialize(attributes)
@@ -23,6 +23,10 @@ class Book
     books
   end
 
+  def addAuthor(author_id)
+    DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id});")
+  end
+
   def save
     result = DB.exec("INSERT INTO books (name, genre, isbn) VALUES ('#{@name}','#{@genre}', '#{@isbn}') RETURNING id;")
     @id = result.first().fetch("id").to_i
@@ -40,7 +44,7 @@ class Book
     book = DB.exec("SELECT * FROM books WHERE id = #{id};").first
     name = book.fetch("name")
     id = book.fetch("id").to_i
-    Book.new({:name => name, :id => id})
+    Book.new({:name => name, :id => id, :genre => genre})
   end
 
   def find_by_artist(artist_id)
@@ -49,7 +53,7 @@ class Book
     returned_books.each() do |book|
       name = book.fetch("name")
       id = book.fetch("id").to_i
-      books.push(Book.new({:name => name, :id => id}))
+      books.push(Book.new({:name => name, :id => id, :genre => genre}))
     end
     return books
   end

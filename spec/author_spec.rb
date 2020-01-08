@@ -1,14 +1,15 @@
 require 'rspec'
 require 'author'
 require('spec_helper')
+require 'pry'
 
 describe '#Author' do
 
   describe('#save') do
     it("Saves author") do
-      author = Author.new({:id => nil, :name => "Cormac McCarthy"})
+      author = Author.new({:id => nil, :name => "Cormac McCarthy", :bio => "Cool guy"})
       author.save()
-      author2 = Author.new({:id => nil, :name => "J. R. R. Tolkien"})
+      author2 = Author.new({:id => nil, :name => "J. R. R. Tolkien", :bio => "Fantasy daddy"})
       author2.save()
       expect(Author.all).to(eq([author, author2]))
     end
@@ -22,17 +23,17 @@ describe '#Author' do
 
   describe('#==') do
     it("is the same author if it has the same attributes as another author") do
-      author = Author.new({:id => 1, :name => "Kind of Blue"})
-      author2 = Author.new({:id => 2, :name => "Kind of Blue"})
+      author = Author.new({:name => "Cormac McCarthy", :id => 1, :bio => "Cool guy"})
+      author2 = Author.new({:name => "Cormac McCarthy", :id => 2, :bio => "Cool guy"})
       expect(author).to(eq(author2))
     end
   end
   #
   describe('.clear') do
     it('clears all authors') do
-      author = Author.new({:name => "Giant Steps", :id => nil})
+      author = Author.new({:name => "Cormac McCarthy", :id => nil, :bio => "Cool guy"})
       author.save()
-      author2 = Author.new({:name => "Blue", :id => nil})
+      author2 = Author.new({:name => "J. R. R. Tolkien", :id => nil, :bio => "Fantasy daddy"})
       author2.save()
       Author.clear()
       expect(Author.all).to(eq([]))
@@ -41,9 +42,9 @@ describe '#Author' do
   #
   describe('.find') do
     it("finds an author by id") do
-      author = Author.new({:name => "Giant Steps", :id => nil})
+      author = Author.new({:name => "Cormac McCarthy", :id => nil, :bio => "Cool guy"})
       author.save()
-      author2 = Author.new({:name => "Blue", :id => nil})
+      author2 = Author.new({:name => "J. R. R. Tolkien", :id => nil, :bio => "Fantasy daddy"})
       author2.save()
       expect(Author.find(author.id)).to(eq(author))
     end
@@ -52,9 +53,9 @@ describe '#Author' do
 
   describe('#delete') do
     it('deletes an author by id') do
-      author = Author.new({:name => "Giant Steps", :id => nil})
+      author = Author.new({:name => "Cormac McCarthy", :id => nil, :bio => "Cool guy"})
       author.save()
-      author2 = Author.new({:name => "Blue", :id => nil})
+      author2 = Author.new({:name => "J. R. R. Tolkien", :id => nil, :bio => "Fantasy daddy"})
       author2.save()
       author.delete()
       expect(Author.all).to(eq([author2]))
@@ -62,21 +63,21 @@ describe '#Author' do
   end
 
   describe('#update') do
-    it("adds an album to an author") do
-      author = Author.new({:name => "John Coltrane", :id => nil})
+    it("adds an book to an author") do
+      author = Author.new({:name => "John Coltrane", :id => nil, :bio => "Musician"})
       author.save()
-      album = Album.new({:name => "A Love Supreme", :id => nil})
-      album.save()
-      author.update({:album_name => "A Love Supreme"})
-      expect(author.albums).to(eq([album]))
+      book = Book.new({:name => "A Love Supreme", :id => nil, :genre => "Action", :isbn => 987654321})
+      book.save()
+      author.update({:creators => "A Love Supreme"})
+      expect(author.books).to(eq([book]))
     end
   end
 
   describe('#update') do
     it("Able to change an authors name") do
-      author = Author.new({:name => "John Coltrane", :id => nil})
+      author = Author.new({:name => "John Coltrane", :id => nil, :bio => "Musician"})
       author.save()
-      author.update({:name => "Joan Rivers", :album_name => "Something Silly"})
+      author.update({:name => "Joan Rivers", :id => nil, :bio => "Comedy"})
       expect(author.name).to(eq("Joan Rivers"))
     end
   end
