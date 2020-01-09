@@ -1,6 +1,7 @@
 require('sinatra')
 require('sinatra/reloader')
 require('./lib/book')
+require('./lib/author')
 require('./lib/patron')
 require('pry')
 require("pg")
@@ -63,9 +64,12 @@ patch('/books/:id') do
 
 end
 
-patch('/books/:id/addAuthor') do
+patch('/books/:id/edit') do
   @book = Book.find(params[:id].to_i)
-  @book.addAuthor(params[:author_id])
+  author = Author.new({:name => params[:author_name], :bio => params[:author_bio], :id => nil})
+  author.save
+
+  @book.addAuthor(author.id)
   erb(:book)
 end
 
@@ -85,8 +89,15 @@ end
 
 get('/authors/:author_id') do
   @author = Author.find(params[:author_id].to_i())
+    # binding.pry
   erb(:author)
 end
+
+get('/authors') do
+  @authors = Author.all
+  erb(:authors)
+end
+
 
 post('/authors') do
   @book = Book.find(params[:id].to_i())
@@ -96,7 +107,7 @@ post('/authors') do
 end
 
 
-patch('/books/:id/authors/:author_id') do
+patch('authors/:author_id') do
   @book = Book.find(params[:id].to_i())
   author = Author.find(params[:author_id].to_i())
   author.update(params[:name], @book.id)

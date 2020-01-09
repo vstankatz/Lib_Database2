@@ -24,6 +24,7 @@ class Book
   end
 
   def addAuthor(author_id)
+    # double_id = DB.exec(
     DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id});")
   end
 
@@ -62,11 +63,12 @@ class Book
     authors = []
     results = DB.exec("SELECT author_id FROM creators WHERE book_id = #{@id};")
     results.each() do |result|
+      # binding.pry
       author_id = result.fetch("author_id").to_i()
-      author = DB.exec("SELECT * FROM authors WHERE id = #{author_id};")
-      name = author.first().fetch("name")
-      bio = author.first().fetch("bio")
-      authors.push(Author.new({:name => name, :id => author_id, :bio => bio}))
+      author = DB.exec("SELECT * FROM authors WHERE id = #{author_id};").first
+      name = author.fetch("name")
+      bio = author.fetch("bio")
+      authors.push(Author.new({:name => (author.fetch("name")), :id => author_id, :bio => (author.fetch("bio"))}))
     end
     return authors
   end
@@ -83,5 +85,6 @@ class Book
 
   def delete
     DB.exec("DELETE FROM books WHERE id = #{@id};")
+    DB.exec("DELETE FROM creators WHERE book_id = #{@id};")
   end
 end

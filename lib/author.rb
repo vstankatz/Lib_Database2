@@ -21,9 +21,15 @@ class Author
   end
 
   def save
+    double = DB.exec("SELECT * FROM authors WHERE name = '#{@name}';")
+    # if double != nil
+    #
+    # else
     result = DB.exec("INSERT INTO authors (name, bio) VALUES ('#{@name}', '#{@bio}') RETURNING id;")
+    binding.pry
     @id = result.first().fetch("id").to_i
-  end
+  # end
+end
 
   def ==(author_to_compare)
     self.name().downcase().eql?(author_to_compare.name.downcase())
@@ -41,9 +47,9 @@ class Author
     Author.new({:name => name, :id => id, :bio => bio})
   end
 
-  def books
-    Book.find_by_author(self.id)
-  end
+  # def books
+  #   Book.find_by_author(self.id)
+  # end <<< NOT SURE WHAT FOR
 
   def update(attributes)
     if (attributes.has_key?(:name)) && (attributes.fetch(:name) != nil)
@@ -51,7 +57,7 @@ class Author
       DB.exec("UPDATE authors SET name = '#{@name}' WHERE id = #{@id};")
     end
     if (attributes.has_key?(:bio)) && (attributes.fetch(:bio) != nil)
-      @name = attributes.fetch(:bio)
+      @bio = attributes.fetch(:bio)
       DB.exec("UPDATE authors SET bio = '#{@bio}' WHERE id = #{@id};")
     end
   end
@@ -59,15 +65,20 @@ class Author
   def books
     books = []
     results = DB.exec("SELECT book_id FROM creators WHERE author_id = #{@id};")
+      if results != nil
     results.each() do |result|
       book_id = result.fetch("book_id").to_i()
       book = DB.exec("SELECT * FROM books WHERE id = #{book_id};")
       name = book.first().fetch("name")
+      id = book.first().fetch("id")
       genre = book.first().fetch("genre")
       isbn = book.first().fetch("isbn")
       books.push(Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn}))
     end
     return books
+    else
+      return books
+    end
   end
 
   def delete

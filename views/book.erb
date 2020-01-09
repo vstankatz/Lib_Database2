@@ -10,12 +10,12 @@
 
 <h3>Book Authors</h3>
 
-  <% if @book.authors %>
+  <% if @book.authors.length >= 1 || @book.authors != nil %>
     <ul>
       <% @book.authors.each do |author| %>
-        <li><a href="/authors/<%= author.id %>"> <%= author.name %> </a></li>
-      <% end %>
+        <li><a href="/authors/<%= author.id %>"> <%= author.name %></a></li>
     </ul>
+    <% end %>
   <% else %>
     <p>There are no authors listed for this book yet.</p>
   <% end %>
