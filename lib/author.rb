@@ -21,14 +21,14 @@ class Author
   end
 
   def save
-    double = DB.exec("SELECT * FROM authors WHERE name = '#{@name}';")
-    # if double != nil
-    #
+      double = DB.exec("SELECT * FROM authors WHERE name = '#{@name}';")
+    # double = DB.exec("SELECT authors.* FROM books JOIN creators ON (books.id = creators.book_id) JOIN authors ON (creators.author_id = authors.id) WHERE authors.name = '#{@name}';")
+    if double == nil
+      result = DB.exec("INSERT INTO authors (name, bio) VALUES ('#{@name}', '#{@bio}') RETURNING id;")
+      @id = result.first().fetch("id").to_i
     # else
-    result = DB.exec("INSERT INTO authors (name, bio) VALUES ('#{@name}', '#{@bio}') RETURNING id;")
-    binding.pry
-    @id = result.first().fetch("id").to_i
-  # end
+    #   @id = double.first().fetch("id").to_i
+    end
 end
 
   def ==(author_to_compare)

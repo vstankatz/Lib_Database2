@@ -4,7 +4,7 @@ require('./lib/book')
 require('./lib/author')
 require('./lib/patron')
 require('pry')
-require("pg")
+require('pg')
 
 DB = PG.connect({:dbname => "library"})
 
@@ -34,11 +34,13 @@ post('/books') do
   id = params[:book_id]
   genre = params[:book_genre]
   isbn = params[:isbn]
-  book = Book.new({:name => name, :id => nil, :genre => genre, :isbn => isbn})
+  new_book = Book.new({:name => name, :id => nil, :genre => genre, :isbn => isbn})
+  @books = Book.all
+  # @books.each do |book|
+  # if new_book == book
   # new_search = book.add_search
   # book = Book.new(name, nil, new_search)
-  book.save()
-  @books = Book.all
+  new_book.save()
   erb(:books)
 end
 
@@ -68,7 +70,6 @@ patch('/books/:id/edit') do
   @book = Book.find(params[:id].to_i)
   author = Author.new({:name => params[:author_name], :bio => params[:author_bio], :id => nil})
   author.save
-
   @book.addAuthor(author.id)
   erb(:book)
 end
@@ -89,7 +90,6 @@ end
 
 get('/authors/:author_id') do
   @author = Author.find(params[:author_id].to_i())
-    # binding.pry
   erb(:author)
 end
 

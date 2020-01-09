@@ -1,6 +1,7 @@
 require 'rspec'
 require 'book'
 require('spec_helper')
+require 'pry'
 
 describe '#Book' do
 

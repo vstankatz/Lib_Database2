@@ -24,8 +24,10 @@ class Book
   end
 
   def addAuthor(author_id)
-    # double_id = DB.exec(
-    DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id});")
+    double = DB.exec("SELECT * FROM creators WHERE author_id = '#{author_id.to_i}' AND book_id = '#{@id}';")
+    if double = nil
+      DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id});")
+    end
   end
 
   def save
@@ -63,7 +65,6 @@ class Book
     authors = []
     results = DB.exec("SELECT author_id FROM creators WHERE book_id = #{@id};")
     results.each() do |result|
-      # binding.pry
       author_id = result.fetch("author_id").to_i()
       author = DB.exec("SELECT * FROM authors WHERE id = #{author_id};").first
       name = author.fetch("name")
