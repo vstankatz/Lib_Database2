@@ -63,9 +63,11 @@ class Author
       book_id = result.fetch("book_id").to_i()
       book = DB.exec("SELECT * FROM books WHERE id = #{book_id};")
       name = book.first().fetch("name")
-      books.push(Book.new({:name => name, :id => book_id}))
+      genre = book.first().fetch("genre")
+      isbn = book.first().fetch("isbn")
+      books.push(Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn}))
     end
-    books
+    return books
   end
 
   def delete

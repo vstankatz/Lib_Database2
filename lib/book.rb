@@ -28,7 +28,7 @@ class Book
   end
 
   def save
-    result = DB.exec("INSERT INTO books (name, genre, isbn) VALUES ('#{@name}','#{@genre}', '#{@isbn}') RETURNING id;")
+    result = DB.exec("INSERT INTO books (name, genre, isbn) VALUES ('#{@name}', '#{@genre}', '#{isbn.to_i}' ) RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
@@ -58,24 +58,27 @@ class Book
     Book.new({:name => name, :id => id, :genre => genre, :isbn => isbn})
   end
 
-  def find_by_artist(artist_id)
-    books = []
-    returned_books = DB.exec("SELECT * FROM books_artists WHERE artist_id = #{artist_id};")
-    returned_books.each() do |book|
-      name = book.fetch("name")
-      id = book.fetch("id").to_i
-      books.push(Book.new({:name => name, :id => id, :genre => genre}))
+  def authors
+    authors = []
+    results = DB.exec("SELECT author_id FROM creators WHERE book_id = #{@id};")
+    results.each() do |result|
+      author_id = result.fetch("author_id").to_i()
+      author = DB.exec("SELECT * FROM authors WHERE id = #{author_id};")
+      name = author.first().fetch("name")
+      bio = author.first().fetch("bio")
+      authors.push(Author.new({:name => name, :id => author_id, :bio => bio}))
     end
-    return books
+    return authors
   end
 
-  def songs
-    Song.find_by_book(self.id)
-  end
 
-  def update(name)
-    @name = name
+  def update(attributes)
+    @name = attributes.fetch(:name)
+    @genre = attributes.fetch(:genre)
+    @isbn = attributes.fetch(:isbn)
     DB.exec("UPDATE books SET name = '#{@name}' WHERE id = #{@id};")
+    DB.exec("UPDATE books SET genre = '#{@genre}' WHERE id = #{@id};")
+    DB.exec("UPDATE books SET isbn = '#{@isbn}' WHERE id = #{@id};")
   end
 
   def delete

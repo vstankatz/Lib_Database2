@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>All Sales Vinyl</title>
-  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-</head>
-<body>
-  <h1>All Sales Vinyl</h1>
 
-  <h3>Available Records</h3>
+  <h3>Available Books</h3>
 
   <% if @books.any? %>
   <ul>
     <% @books.sort_by(&:name).each do |book| %>
-    <li><a href="/books/<%= book.id %>"><%= book.name %>, <%= book.status %></a></li>
+    <li><a href="/books/<%= book.id %>"><%= book.name %></a></li>
     <% end %>
   </ul>
   <% else %>
-  <p>There are currently no records to display.</p>
+  <p>There are currently no books to display.</p>
   <% end %>
 
-  <a href="/books/new">Add a New Album</a>
+  <a href="/books/new">Add a New Book</a>
   <form action="/books/search/" method="get">
     <div class="form-group">
       <label for="searched">Search</label>
@@ -27,6 +19,3 @@
     </div>
     <button type="submit">Go!</button>
   </form>
-
-</body>
-</html>

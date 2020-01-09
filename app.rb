@@ -5,100 +5,107 @@ require('./lib/patron')
 require('pry')
 require("pg")
 
-DB = PG.connect({:dbname => "record_store"})
+DB = PG.connect({:dbname => "library"})
 
 also_reload('lib/**/*.rb')
 
 get('/') do
-  @albums = Album.all
-  erb(:albums)
+  @books = Book.all
+  erb(:books)
 end
 
-get('/albums') do
-      @albums = Album.all
-      erb(:albums)
-    end
-
-
-get('/albums/new') do
-  erb(:new_album)
+get('/books') do
+  @books = Book.all
+  erb(:books)
 end
 
-get('/albums/:id') do
-  @album = Album.find(params[:id].to_i())
-  erb(:album)
+get('/books/new') do
+  erb(:new_book)
 end
 
-post('/albums') do
-  name = params[:album_name]
-  year = params[:album_year]
-  genre = params[:album_genre]
-  artist = params[:album_artist]
-  album = Album.new(name, nil, year, genre, artist, nil)
-  # new_search = album.add_search
-  # album = Album.new(name, nil, new_search)
-  album.save()
-  @albums = Album.all
-  erb(:albums)
+get('/books/:id') do
+  @book = Book.find(params[:id].to_i())
+  erb(:book)
+end
+
+post('/books') do
+  name = params[:book_name]
+  id = params[:book_id]
+  genre = params[:book_genre]
+  isbn = params[:isbn]
+  book = Book.new({:name => name, :id => nil, :genre => genre, :isbn => isbn})
+  # new_search = book.add_search
+  # book = Book.new(name, nil, new_search)
+  book.save()
+  @books = Book.all
+  erb(:books)
 end
 
 
-get('/albums/:id/edit') do
-  @album = Album.find(params[:id].to_i())
-  erb(:edit_album)
+get('/books/:id/edit') do
+  @book = Book.find(params[:id].to_i())
+  erb(:edit_book)
 end
 
-patch('/albums/:id') do
-  if !params[:name] && !params[:year] && !params[:genre] && !params[:artist]
-    @album = Album.find(params[:id].to_i())
-    @album.sold()
-    @albums = Album.all
-    erb(:albums)
+patch('/books/:id') do
+  if !params[:name] && !params[:genre] && !params[:author] && !params[:isbn]
+    @book = Book.find(params[:id].to_i())
+    @book.sold()
+    @books = Book.all
+    erb(:books)
   else
-    @album = Album.find(params[:id].to_i())
-    @album.update(params[:name], params[:year], params[:genre], params[:artist])
-    # @album = Album.add_search
-    @albums = Album.all
-    erb(:album)
+    @book = Book.find(params[:id].to_i())
+    @book.update({:name => params[:name], :genre => params[:genre], :isbn => params[:isbn]})
+    # @book = Book.add_search
+    @books = Book.all
+    erb(:book)
   end
 
 end
 
-delete('/albums/:id') do
-  @album = Album.find(params[:id].to_i())
-  @album.delete()
-  @albums = Album.all
-  erb(:albums)
+patch('/books/:id/addAuthor') do
+  @book = Book.find(params[:id].to_i)
+  @book.addAuthor(params[:author_id])
+  erb(:book)
 end
 
-get('/albums/search/') do
-  @album = Album.search(params[:searched])
+
+
+delete('/books/:id') do
+  @book = Book.find(params[:id].to_i())
+  @book.delete()
+  @books = Book.all
+  erb(:books)
+end
+
+get('/books/search/') do
+  @book = Book.search(params[:searched])
   erb(:search)
 end
 
-get('/albums/:id/songs/:song_id') do
-  @song = Song.find(params[:song_id].to_i())
-  erb(:song)
+get('/authors/:author_id') do
+  @author = Author.find(params[:author_id].to_i())
+  erb(:author)
 end
 
-post('/albums/:id/songs') do
-  @album = Album.find(params[:id].to_i())
-  song = Song.new(params[:song_name], @album.id, nil)
-  song.save()
-  erb(:album)
+post('/authors') do
+  @book = Book.find(params[:id].to_i())
+  author = Author.new(params[:author_name], @book.id, nil)
+  author.save()
+  erb(:book)
 end
 
 
-patch('/albums/:id/songs/:song_id') do
-  @album = Album.find(params[:id].to_i())
-  song = Song.find(params[:song_id].to_i())
-  song.update(params[:name], @album.id)
-  erb(:album)
+patch('/books/:id/authors/:author_id') do
+  @book = Book.find(params[:id].to_i())
+  author = Author.find(params[:author_id].to_i())
+  author.update(params[:name], @book.id)
+  erb(:book)
 end
 
-delete('/albums/:id/songs/:song_id') do
-  song = Song.find(params[:song_id].to_i())
-  song.delete
-  @album = Album.find(params[:id].to_i())
-  erb(:album)
+delete('/books/:id/authors/:author_id') do
+  author = Author.find(params[:author_id].to_i())
+  author.delete
+  @book = Book.find(params[:id].to_i())
+  erb(:book)
 end

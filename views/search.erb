@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Search Results</title>
-  </head>
-  <body>
+
     <h2>Search Results</h2>
-    <% if @album != nil %>
+    <% if @book != nil %>
     <ul>
-      <% @album.sort.each do |album| %>
-      <li><a href="/albums/<%= album.id %>"><%= album.name %></a></li>
+      <% @book.sort.each do |book| %>
+      <li><a href="/books/<%= book.id %>"><%= book.name %></a></li>
       <% end %>
     </ul>
     <% else %>
-    <p>There are currently no records to display.</p>
+    <p>There are currently no books to display.</p>
     <% end %>
 
-    <a href="/albums">Return to Album List</a>
-  </body>
-</html>
+    <a href="/books">Return to Book List</a>
