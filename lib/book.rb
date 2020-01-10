@@ -24,11 +24,13 @@ class Book
   end
 
   def addAuthor(author_id)
-    double = DB.exec("SELECT * FROM creators WHERE author_id = '#{author_id.to_i}' AND book_id = '#{@id}';")
-    if double = nil
-      DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id});")
+    # double = DB.exec("SELECT * FROM creators WHERE author_id = '#{author_id.to_i}' AND book_id = '#{@id}';")
+    # if double = nil
+      DB.exec("INSERT INTO creators (name, bio, id) VALUES (#{name}, #{genre}, #{id}})")
+
+      # DB.exec("INSERT INTO creators (author_id, book_id) VALUES (#{author_id.to_i},#{@id}) AND INSERT INTO authors (name, bio, id) VALUES (#{name}, #{genre}, #{id});")
     end
-  end
+  # end
 
   def save
     result = DB.exec("INSERT INTO books (name, genre, isbn) VALUES ('#{@name}', '#{@genre}', '#{isbn.to_i}' ) RETURNING id;")
